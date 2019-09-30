@@ -44,7 +44,12 @@ if(NOT fhss_utils_sources)
 endif(NOT fhss_utils_sources)
 
 add_library(gnuradio-fhss_utils SHARED ${fhss_utils_sources})
-target_link_libraries(gnuradio-fhss_utils ${Boost_LIBRARIES} ${GNURADIO_ALL_LIBRARIES})
+target_link_libraries(gnuradio-fhss_utils ${Boost_LIBRARIES}  gnuradio::gnuradio-runtime  gnuradio::gnuradio-filter gnuradio::gnuradio-fft)
+target_include_directories(gnuradio-fhss_utils
+    PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
+    PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/>
+    PUBLIC $<INSTALL_INTERFACE:include>
+  )
 set_target_properties(gnuradio-fhss_utils PROPERTIES DEFINE_SYMBOL "gnuradio_fhss_utils_EXPORTS")
 
 if(APPLE)
@@ -60,29 +65,28 @@ set(CMAKE_CXX_FLAGS "-fopenmp -std=c++11 -mavx -O2")
 # Install built library files
 ########################################################################
 include(GrMiscUtils)
-GR_LIBRARY_FOO(gnuradio-fhss_utils RUNTIME_COMPONENT "fhss_utils_runtime" DEVEL_COMPONENT "fhss_utils_devel")
+GR_LIBRARY_FOO(gnuradio-fhss_utils)
 
 ########################################################################
 # Build and register unit test
 ########################################################################
 include(GrTest)
 
-include_directories(${CPPUNIT_INCLUDE_DIRS})
-
 list(APPEND test_fhss_utils_sources
-    ${CMAKE_CURRENT_SOURCE_DIR}/test_fhss_utils.cc
-    ${CMAKE_CURRENT_SOURCE_DIR}/qa_fhss_utils.cc
 )
+# Anything we need to link to for the unit tests go here
+list(APPEND GR_TEST_TARGET_DEPS gnuradio-fhss_utils)
 
-add_executable(test-fhss_utils ${test_fhss_utils_sources})
+if(NOT test_fhss_utils_sources)
+    MESSAGE(STATUS "No C++ unit tests... skipping")
+    return()
+endif(NOT test_fhss_utils_sources)
 
-target_link_libraries(
-  test-fhss_utils
-  ${GNURADIO_RUNTIME_LIBRARIES}
-  ${Boost_LIBRARIES}
-  ${CPPUNIT_LIBRARIES}
-  gnuradio-fhss_utils
-)
+foreach(qa_file ${test_fhss_utils_sources})
+    GR_ADD_CPP_TEST("fhss_utils_${qa_file}"
+        ${CMAKE_CURRENT_SOURCE_DIR}/${qa_file}
+    )
+endforeach(qa_file)
 
 GR_ADD_TEST(test_fhss_utils test-fhss_utils)
 
