@@ -44,7 +44,10 @@ if(NOT fhss_utils_sources)
 endif(NOT fhss_utils_sources)
 
 add_library(gnuradio-fhss_utils SHARED ${fhss_utils_sources})
-target_link_libraries(gnuradio-fhss_utils ${Boost_LIBRARIES}  gnuradio::gnuradio-runtime  gnuradio::gnuradio-filter gnuradio::gnuradio-fft)
+target_link_libraries(gnuradio-fhss_utils 
+                      gnuradio::gnuradio-runtime  
+                      gnuradio::gnuradio-filter 
+                      gnuradio::gnuradio-fft)
 target_include_directories(gnuradio-fhss_utils
     PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
     PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/>
@@ -59,7 +62,7 @@ if(APPLE)
 endif(APPLE)
 
 ##set_target_properties(gnuradio-iridium PROPERTIES CXX_STANDARD_REQUIRED 11)
-set(CMAKE_CXX_FLAGS "-fopenmp -std=c++11  -O2")
+#set(CMAKE_CXX_FLAGS "-fopenmp -std=c++11  -O2")
 
 ########################################################################
 # Install built library files
@@ -88,7 +91,7 @@ foreach(qa_file ${test_fhss_utils_sources})
     )
 endforeach(qa_file)
 
-GR_ADD_TEST(test_fhss_utils test-fhss_utils)
+#GR_ADD_TEST(test_fhss_utils test-fhss_utils)
 
 ########################################################################
 # Print summary
