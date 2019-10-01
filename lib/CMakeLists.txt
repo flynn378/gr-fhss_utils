@@ -62,7 +62,7 @@ if(APPLE)
 endif(APPLE)
 
 ##set_target_properties(gnuradio-iridium PROPERTIES CXX_STANDARD_REQUIRED 11)
-#set(CMAKE_CXX_FLAGS "-fopenmp -std=c++11  -O2")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp -std=c++11  -O2")
 
 ########################################################################
 # Install built library files
@@ -91,7 +91,7 @@ foreach(qa_file ${test_fhss_utils_sources})
     )
 endforeach(qa_file)
 
-#GR_ADD_TEST(test_fhss_utils test-fhss_utils)
+GR_ADD_TEST(test_fhss_utils test-fhss_utils)
 
 ########################################################################
 # Print summary
